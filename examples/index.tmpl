@@ -1,0 +1,17 @@
+{
+    plug_form_mailer => {
+        trigger => [ qw/d plug_form_checker_ok/ ],
+        subject => 'Zen of Design Account Request',
+        to      => 'zoffix@zoffix.com',
+        mailer  => 'testfile',
+        format  => <<'END',
+The following account request has been submitted:
+First name: {:{first_name}:}
+Last name:  {:{last_name}:}
+E-mail:     {:{email}:}
+Phone #:    {:{phone}:}
+Time:       {:[time]:}
+Host:       {:[host]:}
+END
+    },
+}
