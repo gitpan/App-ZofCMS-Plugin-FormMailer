@@ -11,6 +11,7 @@ my $builder = Module::Build->new(
         'Test::More' => 0,
     },
     requires => {
+        'File::Spec' => 3.2701,
         'App::ZofCMS'               => 0.0108,
         'App::ZofCMS::Plugin::Base' => 0.0102,
         'Mail::Send'                => 2.04,

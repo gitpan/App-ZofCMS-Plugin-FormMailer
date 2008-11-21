@@ -1,5 +1,8 @@
 Revision history for App-ZofCMS-Plugin-FormMailer
 
+0.0201  November 21, 2008
+        Added the 'ok_redirect' option and added ability to read the C<format> from file
+
 0.0101  November 9, 2008
         First version, released on an unsuspecting world.
 

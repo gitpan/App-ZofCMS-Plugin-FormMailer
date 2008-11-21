@@ -1,8 +1,9 @@
 #!/usr/bin/env perl
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 BEGIN {
+    use_ok('File::Spec');
     use_ok('App::ZofCMS');
     use_ok('App::ZofCMS::Plugin::Base');
     use_ok('Mail::Send');

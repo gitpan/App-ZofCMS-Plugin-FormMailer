@@ -3,9 +3,10 @@ package App::ZofCMS::Plugin::FormMailer;
 use warnings;
 use strict;
 
-our $VERSION = '0.0101';
+our $VERSION = '0.0201';
 
 use base 'App::ZofCMS::Plugin::Base';
+require File::Spec;
 sub _key { 'plug_form_mailer' }
 sub _defaults {
     return (
@@ -30,6 +31,20 @@ sub _do {
         for values %query;
 
     my $format = $conf->{format};
+    {
+        if ( ref $format ) {
+            my $file_name = File::Spec->catfile( $config->conf->{templates}, $$format );
+            my $fh;
+            unless ( open $fh, '<', $file_name ) {
+                $template->{t}{plug_form_mailer_error} = "Failed to open $file_name [$!]";
+                $format = '';
+                last;
+            }
+
+            $format = do { local $/; <$fh> };
+        }
+    }
+
     my %specials = (
         time => scalar localtime(),
         host => $config->cgi->remote_host,
@@ -52,6 +67,10 @@ sub _do {
     $fh->close;
 
     $template->{ $conf->{ok_key} }{plug_form_mailer_ok} = 1;
+    if ( defined $conf->{ok_redirect} ) {
+        print $config->cgi->redirect( $conf->{ok_redirect} );
+        exit;
+    }
 }
 
 1;
@@ -112,11 +131,12 @@ doing then make sure to set the correct priority:
 =head2 C<plug_form_mailer>
 
         plug_form_mailer => {
-            trigger => [ qw/ d   plug_form_checker_ok / ],
-            subject => 'Zen of Design Account Request',
-            to      => 'foo@bar.com',
-            mailer  => 'testfile',
-            format  => <<'END',
+            trigger     => [ qw/ d   plug_form_checker_ok / ],
+            subject     => 'Zen of Design Account Request',
+            to          => 'foo@bar.com',
+            ok_redirect => 'http://google.com/',
+            mailer      => 'testfile',
+            format      => <<'END',
     The following account request has been submitted:
     First name: {:{first_name}:}
     Time:       {:[time]:}
@@ -131,6 +151,10 @@ their values from ZofCMS Template. Possible keys/values are as follows:
 
 =head3 C<format>
 
+        format  => \'file_name_relative_to_templates',
+
+        # or
+
         format  => <<'END',
     The following account request has been submitted:
     First name: {:{first_name}:}
@@ -139,7 +163,14 @@ their values from ZofCMS Template. Possible keys/values are as follows:
     END
         },
 
-B<Mandatory>. The C<format> key takes a scalar as a value. This scalar represents the body
+B<Mandatory>. The C<format> key takes a scalar or a scalarref as a value.
+When the value is a B<scalarref> then it is interpreted as a file name relative to the
+"templates" dir; this file will be read and its contents will serve as a value for C<format>
+argument (i.e. same as specifying contents of the file to C<format> as scalar value).
+If an error occured when opening the file, the plugin will set the C<plug_form_mailer_error>
+in the C<{t}> special key to the error message and will set the C<format> to an empty string.
+
+When value is a B<scalar>, it represents the body
 of the e-mail that plugin will send. In this scalar you can use special "tags" that will
 be replaced with data. The tag format is C<{:{TAG_NAME}:}>. Tag name cannot contain a closing
 curly bracket (C<}>) in it. Two special tags are C<{:[time]:}> and C<{:[host]:}> (note
@@ -196,10 +227,20 @@ Note that that key's must value must be a hashref. B<Defaults to:> C<t> (thus yo
 readily use the C<< <tmpl_if name="plug_form_mailer_ok"> >> to check for success (or rather
 display some messages).
 
+=head3 C<ok_redirect>
+
+    ok_redirect => 'http://google.com/',
+
+B<Optional>. Takes a string with a URL in it. When specified the plugin will redirect the
+user to the page specified in C<ok_redirect> after sending the mail. B<By default> is not
+specified.
+
 =head1 AUTHOR
 
 'Zoffix, C<< <'zoffix at cpan.org'> >>
 (L<http://zoffix.com/>, L<http://haslayout.net/>, L<http://zofdesign.com/>)
+
+Patches from Jon Smith aka jonsmith1982
 
 =head1 BUGS
 
