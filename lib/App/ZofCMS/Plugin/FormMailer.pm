@@ -3,7 +3,7 @@ package App::ZofCMS::Plugin::FormMailer;
 use warnings;
 use strict;
 
-our $VERSION = '0.0201';
+our $VERSION = '0.0211';
 
 use base 'App::ZofCMS::Plugin::Base';
 require File::Spec;
@@ -60,6 +60,10 @@ sub _do {
     my $msg = Mail::Send->new;
     $msg->to( @{ $conf->{to} } );
     $msg->subject( $conf->{subject} );
+
+    $msg->set('From', $conf->{from})
+        if defined $conf->{from}
+            and length $conf->{from};
 
     $Mail::Mailer::testfile::config{outfile} = 'mailer.testfile';
     my $fh = $msg->open( $conf->{mailer} ? $conf->{mailer} : () );
@@ -134,6 +138,7 @@ doing then make sure to set the correct priority:
             trigger     => [ qw/ d   plug_form_checker_ok / ],
             subject     => 'Zen of Design Account Request',
             to          => 'foo@bar.com',
+            from        => 'Me <me@mymail.com>',
             ok_redirect => 'http://google.com/',
             mailer      => 'testfile',
             format      => <<'END',
@@ -186,6 +191,15 @@ B<Mandatory>. Specifies the e-mail address(es) to which to send the e-mails. Tak
 an arrayref or a scalar as a value. Specifying a scalar is the same as specifying
 an arrayref with just that scalar in it. Each element of that arrayref must be a valid
 e-mail address.
+
+=head3 C<from>
+
+    from => 'Me <me@mymail.com>',
+
+B<Optional>. Specifies the "From" header to use. Note: in my experience, setting the "From"
+to some funky address would sometimes make the server refuse to send mail; if your mail
+is not being sent, try to leave the C<from> header at the default.B<By default:> not
+specified, thus the "From" will be whatever your server has in stock.
 
 =head3 C<trigger>
 
