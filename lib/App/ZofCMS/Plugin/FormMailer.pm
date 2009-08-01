@@ -3,7 +3,7 @@ package App::ZofCMS::Plugin::FormMailer;
 use warnings;
 use strict;
 
-our $VERSION = '0.0211';
+our $VERSION = '0.0222';
 
 use base 'App::ZofCMS::Plugin::Base';
 require File::Spec;
@@ -149,9 +149,22 @@ doing then make sure to set the correct priority:
     END
         },
 
+
+    plug_form_mailer => sub {
+        my ( $t, $q, $config ) = @_;
+        return {
+            # set plugin config here
+        };
+    },
+
 The plugin will not run unless C<plug_form_mailer> first-level key is set in either Main
 Config File or ZofCMS Template file. The C<plug_form_mailer> first-level key takes a hashref
-as a value. Keys that are set in both Main Config File and ZofCMS Template file will take on
+or a subref as a value. If subref is specified,
+its return value will be assigned to C<plug_form_mailer> as if it was already there. If sub
+returns
+an C<undef>, then plugin will stop further processing. The C<@_> of the subref will
+contain (in that order): ZofCMS Tempalate hashref, query parameters hashref and
+L<App::ZofCMS::Config> object. Keys that are set in both Main Config File and ZofCMS Template file will take on
 their values from ZofCMS Template. Possible keys/values are as follows:
 
 =head3 C<format>

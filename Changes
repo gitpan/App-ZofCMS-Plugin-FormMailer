@@ -1,5 +1,8 @@
 Revision history for App-ZofCMS-Plugin-FormMailer
 
+0.0222  July 31, 2009
+        Added missing part of docs
+
 0.0221  November 21, 2008
         Added means to change the "From" header
 
