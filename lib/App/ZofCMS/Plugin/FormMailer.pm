@@ -3,7 +3,7 @@ package App::ZofCMS::Plugin::FormMailer;
 use warnings;
 use strict;
 
-our $VERSION = '0.0222';
+our $VERSION = '0.0223';
 
 use base 'App::ZofCMS::Plugin::Base';
 require File::Spec;
@@ -79,6 +79,8 @@ sub _do {
 
 1;
 __END__
+
+=encoding utf8
 
 =head1 NAME
 

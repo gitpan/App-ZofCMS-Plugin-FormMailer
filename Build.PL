@@ -15,7 +15,9 @@ my $builder = Module::Build->new(
         'App::ZofCMS'               => 0.0108,
         'App::ZofCMS::Plugin::Base' => 0.0102,
         'Mail::Send'                => 2.04,
+        'perl' => '5.006',
     },
+    configure_requires => { 'Module::Build' => 0 },
     add_to_cleanup      => [ 'App-ZofCMS-Plugin-FormMailer-*' ],
     create_makefile_pl => 'traditional',
 );

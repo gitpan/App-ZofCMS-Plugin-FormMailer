@@ -1,26 +1,28 @@
 ---
-name: App-ZofCMS-Plugin-FormMailer
-version: 0.0222
+abstract: 'plugin for e-mailing forms'
 author:
   - "Zoffix <'zoffix@cpan.org'>"
-abstract: plugin for e-mailing forms
-license: perl
-resources:
-  license: http://dev.perl.org/licenses/
 build_requires:
   Test::More: 0
+configure_requires:
+  Module::Build: 0
+dynamic_config: 1
+generated_by: 'Module::Build version 0.4007, CPAN::Meta::Converter version 2.132830'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: App-ZofCMS-Plugin-FormMailer
+provides:
+  App::ZofCMS::Plugin::FormMailer:
+    file: lib/App/ZofCMS/Plugin/FormMailer.pm
+    version: 0.0223
 requires:
   App::ZofCMS: 0.0108
   App::ZofCMS::Plugin::Base: 0.0102
   File::Spec: 3.2701
   Mail::Send: 2.04
-configure_requires:
-  Module::Build: 0.34
-provides:
-  App::ZofCMS::Plugin::FormMailer:
-    file: lib/App/ZofCMS/Plugin/FormMailer.pm
-    version: 0.0222
-generated_by: Module::Build version 0.34
-meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.4.html
-  version: 1.4
+  perl: 5.006
+resources:
+  license: http://dev.perl.org/licenses/
+version: 0.0223
